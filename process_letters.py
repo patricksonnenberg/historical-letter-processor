@@ -37,11 +37,11 @@ def show_result():
                     cursor.execute("UPDATE entities SET count = ? WHERE label = ? AND text = ?", (count, ent.label_, ent.text))
             connection.commit()
             my_markup_dict['mark'] = ner_spacyed_text
-            return render_template("resultnew.html", text=ner_spacyed_text, entities=doc.ents)
+            return render_template("result.html", text=ner_spacyed_text, entities=doc.ents)
         else:
-            return render_template('resultnew.html', text=my_markup_dict['mark'])  # To prompt user to add input
+            return render_template('result.html', text=my_markup_dict['mark'])  # To prompt user to add input
     else:
-        return render_template('resultnew.html', text=my_markup_dict['mark'])  # To prompt user to add input
+        return render_template('result.html', text=my_markup_dict['mark'])  # To prompt user to add input
 
 @app.route('/entity_db')
 def get_counts():
