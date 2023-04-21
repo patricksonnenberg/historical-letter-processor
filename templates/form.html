@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>spaCy Form Example</title>
+    <style>
+        input[type="text"], input[type="submit"] {
+            font-size: 20px;
+            padding: 10px;
+            width: 900px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Named Entity Tagger:</h1>
+
+    Please type in the form what you would like to have tagged.
+    <br><br>
+    <form method="post" action="/analyze">
+        <label for="text_input">Text:</label>
+        <input type="text" name="text_input" id="text_input">
+        <br><br>
+        <input type="submit" value="Analyze">
+        <p>[ <a href="/entity_db">View Entity Counts</a> | <a href="/analyze">NER</a> ]</p>
+
+    </form>
+</body>
+</html>

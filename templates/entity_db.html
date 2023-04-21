@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Entity Counts</title>
+    <style>
+    table {
+      table-layout: fixed;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      text-align: center;
+      padding: 8px;
+    }
+    th {
+      background-color: black;
+      color: white;
+    }
+    tr:nth-child(even) {background-color: #f2f2f2;}
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>Entity Label</th>
+            <th>Entity Text</th>
+            <th>Count</th>
+        </tr>
+        {% for entity in entity_counts|sort(attribute='text') %}
+            <tr>
+                <td>{{ entity.label }}</td>
+                <td>{{ entity.text }}</td>
+                <td>{{ entity.count }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <p>[ <a href="/">Home</a> | <a href="/analyze">NER</a> ]</p>
+</body>
+</html>

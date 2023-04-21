@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+
+    <title>spaCy Results Example</title>
+</head>
+<body>
+    <h1>Results</h1>
+    <p><strong>Input:</strong> {{ text|safe }}</p>
+    <p><strong>Named Entities:</strong></p>
+    <ul>
+    {% for entity in entities %}
+        <li>{{ entity.label_ }} - {{ entity.text }}</li>
+    {% endfor %}
+    </ul>
+    <p>[ <a href="/">Home</a> | <a href="/entity_db">View Entity Counts</a> ]</p>
+
+</body>
+</html>
