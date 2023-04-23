@@ -1,0 +1,23 @@
+<html>
+
+<head>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+    <style>
+        body { background-color: linen; }
+    </style>
+
+</head>
+
+<body>
+    <img src=image_file>
+    <form action="{{ url_for('show_result') }}" name="get_text" method="post">
+        <label for="doc_text">Please check the text below. Make any changes you deem necessary and click submit.</label>
+        <textarea cols="45" id="doc_text" name="doc_text" required="required" rows="8">
+            {{found_text}}
+        </textarea>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+
+</html>

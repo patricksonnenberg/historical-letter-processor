@@ -20,19 +20,23 @@ def index():
         if uploaded_file.filename != '':
             dir_file_name = IMAGE_DIR + uploaded_file.filename
             uploaded_file.save(dir_file_name)
-        return redirect(url_for('show_result', file=dir_file_name))
+        return redirect(url_for('ocr_results', file="../"+dir_file_name))
     return render_template('home_page.html')
 
-
-@app.route('/analyze', methods=["GET", "POST"])
-def show_result():
+@app.route('/ocr_results', methods=["GET", "POST"])
+def ocr_results():
     file = request.args.get('file')
     print(file)
     ## get text from pdf/jpeg
-    # this may need to be split into multiple methods
     ## show image and a text box for editting the text we find
+    found_text = "NEED TO MELISSA'S and PATRICK'S WORK HERE"
+    # Cannot make this image actually show up, help :(
+    return render_template('ocr_results.html', found_text=found_text, imgage_file="../"+file)
+
+@app.route('/analyze', methods=["GET", "POST"])
+def show_result():
     if request.method == "POST":
-        text = request.form["text_input"]
+        text = request.form["doc_text"]
         if text:
             doc = nlp(text)
             spacyed_text = ner.SpacyDocument(text)  # Creating spacy object
@@ -53,11 +57,11 @@ def show_result():
                     cursor.execute("UPDATE entities SET count = ? WHERE label = ? AND text = ?", (count, ent.label_, ent.text))
             connection.commit()
             my_markup_dict['mark'] = ner_spacyed_text
-            return render_template("result.html", text=ner_spacyed_text, entities=doc.ents, imgage_file=file)
+            return render_template("result.html", text=ner_spacyed_text, entities=doc.ents)
         else:
-            return render_template('result.html', text=my_markup_dict['mark'], imgage_file=file)  # To prompt user to add input
+            return render_template('result.html', text=my_markup_dict['mark'])  # To prompt user to add input
     else:
-        return render_template('result.html', text=my_markup_dict['mark'], imgage_file=file)  # To prompt user to add input
+        return render_template('result.html', text=my_markup_dict['mark'])  # To prompt user to add input
 
 @app.route('/entity_db')
 def get_counts():
