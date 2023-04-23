@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Historical Document Processor</title>
+    <style>
+        input[type="text"] {
+            font-size: 20px;
+            padding: 10px;
+            width: 900px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Historical Document Processor Home</h1>
+
+    Please select which file you would like processed. 
+    <br><br>
+    
+      <form action = "{{ url_for('index') }}" method = "POST" 
+         enctype = "multipart/form-data">
+         <input type = "file" name = "file" accept=".pdf,.jpeg"/>
+         <input type = "submit"/>
+      </form>   
+</body>
+</html>
