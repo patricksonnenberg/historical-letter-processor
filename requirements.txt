@@ -1,4 +1,7 @@
 flask
 spacy
-tesseract
+pytesseract
 werkzeug
+pillow
+pdf2image
+pathlib

@@ -1,8 +1,8 @@
 import fitz
+from PIL import Image
 from pdf2image import convert_from_path
 from pathlib import Path
-import argparse
-import os
+from pytesseract import pytesseract
 
 
 class PdfDoc:
@@ -29,42 +29,32 @@ class PdfDoc:
         return f"PdfDoc object for file '{self.pdf_file_path.name}'"
 
 
-
-def convert_pdf_to_img(doc: PdfDoc, images_file_path: Path):
+def convert_pdf_to_img(doc: PdfDoc) -> list[Image]:
     if doc.pdf_type == "scanned_pdf":
-        pdf_path = doc.pdf_file_path
-        pdf_dir = images_file_path.joinpath(pdf_path.stem)
-        pdf_dir.mkdir(parents=True, exist_ok=True)
-        images = convert_from_path(pdf_path)
-        for i, image in enumerate(images):
-            image_path = pdf_dir.joinpath(f"{pdf_path.stem}_{i}.jpg")
-            image.save(image_path)
-        print(f"completed converting pdf file '{pdf_path.stem}' to jpg(s)")
+        return convert_from_path(doc.pdf_file_path, dpi=300)
     else:
         raise ValueError(f"Digital pdf file '{doc.pdf_file_path.stem}' doesn't need to be converted")
 
+def ocr(image_list: list[bytes]) -> str:
+    text_pages = []
+    for image in image_list:
+        text = pytesseract.image_to_string(image)
+        text = text.replace("-\n", "")
+        text_pages.append(text)
+    return "\n".join(text_pages)
 
+def process_pdf_file(file_path: str):
+    pdf_file_path = Path(f"UPLOADED_DOCS/{file_path}")
+    pdf_obj = PdfDoc(pdf_file_path)
+    if pdf_obj.pdf_type == "scanned_pdf":
+        print(f"PDF file '{pdf_obj.pdf_file_path.stem}' is a scanned PDF. Converting to JPEG file and processing text through OCR...")
+        image_bytes = convert_pdf_to_img(doc=pdf_obj)
+        return ocr(image_bytes)
+    else:
+        print(f"PDF file '{pdf_obj.pdf_file_path.stem}' is a digital PDF.")
+        return pdf_obj.pdf_text
 
-def main():
-    parser = argparse.ArgumentParser(description="Loads PDF files and analyzes contents")
-    parser.add_argument('--pdf_folder', type=str, help='Folder containing the PDF files', required=True)
-    parser.add_argument('--images_folder', type=str, help='Folder to save the JPG images that have been converted from PDFs', required=True)
-    args = parser.parse_args()
-    
-    input_pdf_folder = Path(args.pdf_folder)
-    output_jpg_folder = Path(args.images_folder)
-    
-    pdf_files = [f for f in os.listdir(input_pdf_folder) if f.endswith('.pdf')]
-    
-    for pdf_file in pdf_files:
-        pdf_path = input_pdf_folder.joinpath(pdf_file)
-        pdf_obj = PdfDoc(pdf_path)
-        if pdf_obj.pdf_type == "scanned_pdf":
-            print(f"pdf file '{pdf_obj.pdf_file_path.stem}' is a scanned pdf")
-            convert_pdf_to_img(doc=pdf_obj, images_file_path=output_jpg_folder)
-        else:
-            print(f"pdf file '{pdf_obj.pdf_file_path.stem}' is a digital pdf")
 
 if __name__ == "__main__":
-    main()
+    pass
     

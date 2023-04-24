@@ -1,5 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for
 import spacy
+
+from load_pdfs import process_pdf_file
 import ner
 import db
 from werkzeug.utils  import secure_filename
@@ -29,7 +31,7 @@ def ocr_results():
     print(file)
     ## get text from pdf/jpeg
     ## show image and a text box for editting the text we find
-    found_text = "NEED TO MELISSA'S and PATRICK'S WORK HERE"
+    found_text = process_pdf_file(file)
     # Cannot make this image actually show up, help :(
     return render_template('ocr_results.html', found_text=found_text, imgage_file="../"+file)
 
