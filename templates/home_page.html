@@ -16,7 +16,7 @@
     Please select which file you would like processed. 
     <br><br>
     
-      <form action = "{{ url_for('index') }}" method = "POST" 
+      <form action = "{{ url_for('ocr_results') }}" method = "POST" 
          enctype = "multipart/form-data">
          <input type = "file" name = "file" accept=".pdf,.jpeg"/>
          <input type = "submit"/>
