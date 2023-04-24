@@ -1,9 +1,8 @@
 import fitz
 from pdf2image import convert_from_path
 from pathlib import Path
-
-file_path = Path("data/scanned/174.pdf")
-images_folder = Path("jpgs_from_pdfs")
+import argparse
+import os
 
 
 class PdfDoc:
@@ -15,7 +14,7 @@ class PdfDoc:
         :param input_pdf: The path to the PDF file to read
         """
         self.pdf_file_path = pdf_file_path
-        self.doc = fitz.Document()
+        self.doc = fitz.Document(pdf_file_path)
         self.pdf_text = self.extract_text()
         self.pdf_type = "scanned_pdf" if len(self.pdf_text) == 0 else "digital_pdf"
 
@@ -29,7 +28,7 @@ class PdfDoc:
     def __str__(self):
         return f"PdfDoc object for file '{self.pdf_file_path.name}'"
 
-pdf_obj = PdfDoc(file_path)
+
 
 def convert_pdf_to_img(doc: PdfDoc, images_file_path: Path):
     if doc.pdf_type == "scanned_pdf":
@@ -37,13 +36,35 @@ def convert_pdf_to_img(doc: PdfDoc, images_file_path: Path):
         pdf_dir = images_file_path.joinpath(pdf_path.stem)
         pdf_dir.mkdir(parents=True, exist_ok=True)
         images = convert_from_path(pdf_path)
-        i = 0
-        for image in images:
-            image_path = pdf_dir.joinpath(f"page_{i}.jpg")
+        for i, image in enumerate(images):
+            image_path = pdf_dir.joinpath(f"{pdf_path.stem}_{i}.jpg")
             image.save(image_path)
-            i += 1
-        print(f"Converted {i} pages of pdf '{pdf_path.stem}' to images")
+        print(f"completed converting pdf file '{pdf_path.stem}' to jpg(s)")
     else:
-        raise ValueError(f"Digital pdf '{doc.pdf_file_path.stem}' doesn't need to be converted")
+        raise ValueError(f"Digital pdf file '{doc.pdf_file_path.stem}' doesn't need to be converted")
 
-convert_pdf_to_img(doc=pdf_obj, images_file_path=images_folder)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Loads PDF files and analyzes contents")
+    parser.add_argument('--pdf_folder', type=str, help='Folder containing the PDF files', required=True)
+    parser.add_argument('--images_folder', type=str, help='Folder to save the JPG images that have been converted from PDFs', required=True)
+    args = parser.parse_args()
+    
+    input_pdf_folder = Path(args.pdf_folder)
+    output_jpg_folder = Path(args.images_folder)
+    
+    pdf_files = [f for f in os.listdir(input_pdf_folder) if f.endswith('.pdf')]
+    
+    for pdf_file in pdf_files:
+        pdf_path = input_pdf_folder.joinpath(pdf_file)
+        pdf_obj = PdfDoc(pdf_path)
+        if pdf_obj.pdf_type == "scanned_pdf":
+            print(f"pdf file '{pdf_obj.pdf_file_path.stem}' is a scanned pdf")
+            convert_pdf_to_img(doc=pdf_obj, images_file_path=output_jpg_folder)
+        else:
+            print(f"pdf file '{pdf_obj.pdf_file_path.stem}' is a digital pdf")
+
+if __name__ == "__main__":
+    main()
+    
