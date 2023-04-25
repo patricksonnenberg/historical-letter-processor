@@ -1,5 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory
 import spacy
+
+from load_pdfs import process_pdf_file
 import ner
 import db
 from werkzeug.utils  import secure_filename
@@ -36,9 +38,8 @@ def ocr_results():
     print(img)
     ## get text from pdf/jpeg
     ## show image and a text box for editting the text we find
-    found_text = "NEED TO MELISSA'S and PATRICK'S WORK HERE"
-    
-   
+    found_text = process_pdf_file(img)
+    # FROM MELISSA: connected load_pdfs.py functionality to file to make it modular! :)
     return render_template('ocr_results.html', found_text=found_text, image_file=img)
 
 @app.route('/uploads/<filename>')

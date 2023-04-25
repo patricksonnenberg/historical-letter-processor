@@ -1,7 +1,8 @@
 flask
 spacy
+pytesseract
 tesseract
 werkzeug
-pathlib
-pymupdf
+pillow
 pdf2image
+pathlib
