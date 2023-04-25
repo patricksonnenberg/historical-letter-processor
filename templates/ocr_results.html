@@ -10,8 +10,8 @@
 </head>
 
 <body>
-    <img src="{{image_file}}">
-    {{image_file}}
+    <img src="{{image_file}}" width=300>
+
     <form action="{{ url_for('show_result') }}" name="get_text" method="post">
         <label for="doc_text">Please check the text below. Make any changes you deem necessary and click submit.</label>
         <textarea cols="45" id="doc_text" name="doc_text" required="required" rows="8">
