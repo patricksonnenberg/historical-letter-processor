@@ -10,7 +10,10 @@
 </head>
 
 <body>
-    <img src="{{image_file}}" width=300>
+    {% for i in image_files %}
+        <img src={{i}} width=300>
+    {% endfor %}
+    
 
     <form action="{{ url_for('show_result') }}" name="get_text" method="post">
         <label for="doc_text">Please check the text below. Make any changes you deem necessary and click submit.</label>
@@ -20,7 +23,7 @@
         <input type="submit" value="Submit">
     </form>
 
-    <form action="{{url_for('home_page', file=image_file)}}" method="post">
+    <form action="{{url_for('home_page', file=image_files)}}" method="post">
         <button type="submit">Cancel</button>
     </form>
 </body>

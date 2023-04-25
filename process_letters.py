@@ -21,8 +21,9 @@ app.config['UPLOADED_DOCS'] = IMAGE_DIR
 def home_page():
     if request.method == 'POST':
         # Delete the file if this it has been canceled
-        file = request.args.get('file')
-        os.remove(file)
+        files = request.args.get('files')
+        for file in files:
+            os.remove(file)
     return render_template('home_page.html')
 
 
@@ -39,8 +40,11 @@ def ocr_results():
     ## get text from pdf/jpeg
     ## show image and a text box for editting the text we find
     img, found_text = process_file(img)
+    print(img)
+    images = [os.path.join(app.config['UPLOADED_DOCS'], i.split("/")[-1]) for i in img]
+    print(images)
     # FROM MELISSA: connected file_loader.py functionality to file to make it modular! :)
-    return render_template('ocr_results.html', found_text=found_text, image_file=img)
+    return render_template('ocr_results.html', found_text=found_text, image_files=images)
 
 @app.route('/uploads/<filename>')
 def send_uploaded_file(filename=''):

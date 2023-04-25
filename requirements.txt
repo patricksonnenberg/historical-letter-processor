@@ -6,3 +6,4 @@ werkzeug
 pillow
 pdf2image
 pathlib
+python-poppler
