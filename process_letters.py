@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, send_from_directory
 import spacy
 import ner
 import db
@@ -10,28 +10,40 @@ nlp = spacy.load("en_core_web_sm")
 connection = db.DatabaseConnection('entities.sqlite')
 my_markup_dict = {'mark': "Please return to the home page to add your input."}
 
-IMAGE_DIR = "templates/UPLOADED_DOCS/"
+IMAGE_DIR = os.path.join('static', 'uploads')
 os.makedirs(IMAGE_DIR, exist_ok = True)
+app.config['UPLOADED_DOCS'] = IMAGE_DIR
+
 
 @app.route('/', methods=['GET', 'POST'])
-def index():
+def home_page():
     if request.method == 'POST':
-        uploaded_file = request.files['file']
-        if uploaded_file.filename != '':
-            dir_file_name = IMAGE_DIR + uploaded_file.filename
-            uploaded_file.save(dir_file_name)
-        return redirect(url_for('ocr_results', file="../"+dir_file_name))
+        # Delete the file if this it has been canceled
+        file = request.args.get('file')
+        os.remove(file)
     return render_template('home_page.html')
 
-@app.route('/ocr_results', methods=["GET", "POST"])
+
+@app.route('/ocr_results', methods=['POST'])
 def ocr_results():
-    file = request.args.get('file')
-    print(file)
+    uploaded_file = request.files['file']
+    if uploaded_file.filename != '':
+        filename = secure_filename(uploaded_file.filename)
+        uploaded_file.save(os.path.join(app.config['UPLOADED_DOCS'], filename))
+        img = os.path.join(app.config['UPLOADED_DOCS'], filename)
+    else:
+        img = ""
+    print(img)
     ## get text from pdf/jpeg
     ## show image and a text box for editting the text we find
     found_text = "NEED TO MELISSA'S and PATRICK'S WORK HERE"
-    # Cannot make this image actually show up, help :(
-    return render_template('ocr_results.html', found_text=found_text, imgage_file="../"+file)
+    
+   
+    return render_template('ocr_results.html', found_text=found_text, image_file=img)
+
+@app.route('/uploads/<filename>')
+def send_uploaded_file(filename=''):
+    return send_from_directory(app.config["IMAGE_UPLOADS"], filename)
 
 @app.route('/analyze', methods=["GET", "POST"])
 def show_result():
