@@ -1,8 +1,11 @@
+import platform
+import urllib.request
 import fitz
 from PIL import Image
 from pdf2image import convert_from_path
 from pathlib import Path
 from pytesseract import pytesseract
+import os
 
 
 class PdfDoc:
@@ -56,5 +59,23 @@ def process_pdf_file(file_path: str):
 
 
 if __name__ == "__main__":
-    pass
+    # check the operating system
+    os_name = platform.system()
+    if os_name == 'Linux' or os_name == 'Darwin':  # for Unix-based systems like Linux and macOS
+        # check if tesseract is installed
+        try:
+            os.system('which tesseract')
+        except OSError:
+            raise Exception(
+                'tesseract is not installed. Please run "sudo apt-get install tesseract-ocr" for Linux or "brew install tesseract" for macOS')
+    else:  # for Windows
+        # set up the Tesseract download URL and filename
+        url = 'https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-5.3.1.20230401.exe'
+        filename = 'tesseract-ocr-w64-setup-v5.0.0-alpha.20201127.exe'
+        # download Tesseract if it's not installed
+        if not os.path.exists(filename):
+            urllib.request.urlretrieve(url, filename)
+        # set tesseract_cmd path
+        tesseract_cmd = os.path.join(os.getcwd(), 'tesseract', 'tesseract.exe')
+        pytesseract.tesseract_cmd = tesseract_cmd
     

@@ -33,6 +33,7 @@ def ocr_results():
     ## show image and a text box for editting the text we find
     found_text = process_pdf_file(file)
     # Cannot make this image actually show up, help :(
+    # FROM MELISSA: connected load_pdfs.py functionality to file to make it modular! :)
     return render_template('ocr_results.html', found_text=found_text, imgage_file="../"+file)
 
 @app.route('/analyze', methods=["GET", "POST"])

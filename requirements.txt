@@ -1,6 +1,7 @@
 flask
 spacy
 pytesseract
+tesseract
 werkzeug
 pillow
 pdf2image
