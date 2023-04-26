@@ -7,3 +7,6 @@ pillow
 pdf2image
 pathlib
 python-poppler
+nltk
+bert-extractive-summarizer
+torch
