@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
     <style>
         body { background-color: linen; }
+
     </style>
 
 </head>
@@ -14,7 +15,9 @@
         <img src={{i}} width=300>
     {% endfor %}
     
-
+    {% if not is_valid_text %}
+        <strong>WARNING the text found seems incoherent or incomplete, please carefully check and make necessary changes.</strong>
+    {% endif %}
     <form action="{{ url_for('show_result') }}" name="get_text" method="post">
         <label for="doc_text">Please check the text below. Make any changes you deem necessary and click submit.</label>
         <textarea cols="45" id="doc_text" name="doc_text" required="required" rows="8">

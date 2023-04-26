@@ -9,7 +9,7 @@ nlp = spacy.load("en_core_web_sm")
 nltk.download('brown')
 brown_words = set(nltk.corpus.brown.words())
 
-def process_string(string_input):
+def check_validity(string_input):
     """
     This method checks if the generated string of text contains mostly gibberish
     or mostly words found in the Brown corpus. A score is generated and it must
@@ -22,7 +22,7 @@ def process_string(string_input):
         token_count += 1
         if token.lower() in brown_words:  # Checking if it's a valid word or gibberish
             valid_tokens += 1
-    score = valid_tokens / token_count
+    score = valid_tokens / token_count if token_count != 0 else 0
     if score >= 0.7:  # Score must meet a threshold for it to be considered a valid generation
         return True
     else:

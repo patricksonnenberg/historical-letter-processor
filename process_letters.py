@@ -4,7 +4,7 @@ import spacy
 from file_loader import process_file
 import ner
 import db
-from werkzeug.utils  import secure_filename
+from werkzeug.utils import secure_filename
 import os
 import process_text
 
@@ -46,9 +46,9 @@ def ocr_results():
     print(images)
     # FROM MELISSA: connected file_loader.py functionality to file to make it modular! :)
 
-    is_gibberish = process_text.process_string(found_text) # Returns boolean of true or false
+    is_valid_text = process_text.check_validity(found_text) # Returns boolean of true or false
 
-    return render_template('ocr_results.html', found_text=found_text, image_files=images)
+    return render_template('ocr_results.html', found_text=found_text, image_files=images, is_valid_text=is_valid_text)
 
 @app.route('/uploads/<filename>')
 def send_uploaded_file(filename=''):
@@ -56,6 +56,7 @@ def send_uploaded_file(filename=''):
 
 @app.route('/analyze', methods=["GET", "POST"])
 def show_result():
+    # I think once we are here, perhaps we should delete the images to clean up
     if request.method == "POST":
         text = request.form["doc_text"]
         if text:
@@ -80,7 +81,7 @@ def show_result():
                     cursor.execute("UPDATE entities SET count = ? WHERE label = ? AND text = ?", (count, ent.label_, ent.text))
             connection.commit()
             my_markup_dict['mark'] = ner_spacyed_text
-            return render_template("result.html", text=ner_spacyed_text, entities=doc.ents)
+            return render_template("result.html", text=ner_spacyed_text, entities=doc.ents, summary=summarized_text)
         else:
             return render_template('result.html', text=my_markup_dict['mark'])  # To prompt user to add input
     else:
