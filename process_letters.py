@@ -6,6 +6,7 @@ import ner
 import db
 from werkzeug.utils  import secure_filename
 import os
+import process_text
 
 app = Flask(__name__)
 nlp = spacy.load("en_core_web_sm")
@@ -44,6 +45,9 @@ def ocr_results():
     images = [os.path.join(app.config['UPLOADED_DOCS'], i.split("/")[-1]) for i in img]
     print(images)
     # FROM MELISSA: connected file_loader.py functionality to file to make it modular! :)
+
+    is_gibberish = process_text.process_string(found_text) # Returns boolean of true or false
+
     return render_template('ocr_results.html', found_text=found_text, image_files=images)
 
 @app.route('/uploads/<filename>')
@@ -58,6 +62,8 @@ def show_result():
             doc = nlp(text)
             spacyed_text = ner.SpacyDocument(text)  # Creating spacy object
             ner_spacyed_text = spacyed_text.get_entities_with_markup()  # Calling on this method in ner to NER-ize the text
+
+            summarized_text = process_text.get_summary(text)  # Gets the summary of the text
 
             # Iterating over the entities in the doc and update the counts in the database
             cursor = connection.get_cursor()
