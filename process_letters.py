@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory
 import spacy
 
-from file_loader import process_file
+from process_files import process_file
 import ner
 import db
 from werkzeug.utils  import secure_filename
@@ -43,7 +43,7 @@ def ocr_results():
     print(img)
     images = [os.path.join(app.config['UPLOADED_DOCS'], i.split("/")[-1]) for i in img]
     print(images)
-    # FROM MELISSA: connected file_loader.py functionality to file to make it modular! :)
+    # FROM MELISSA: connected process_files.py functionality to file to make it modular! :)
     return render_template('ocr_results.html', found_text=found_text, image_files=images)
 
 @app.route('/uploads/<filename>')
