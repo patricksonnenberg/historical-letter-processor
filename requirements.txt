@@ -5,5 +5,4 @@ tesseract
 werkzeug
 pillow
 pdf2image
-pathlib
-python-poppler
+poppler

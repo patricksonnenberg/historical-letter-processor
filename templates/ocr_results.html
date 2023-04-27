@@ -10,9 +10,17 @@
 </head>
 
 <body>
-    {% for i in image_files %}
-        <img src={{i}} width=300>
-    {% endfor %}
+    <table>
+        <tr>
+            <td>
+                <h2>Image</h2>
+                    {% for i in image_files %}
+                        <img src={{i}} width=300>
+                    {% endfor %}
+            </td>
+        </tr>
+    </table>
+
     
 
     <form action="{{ url_for('show_result') }}" name="get_text" method="post">
