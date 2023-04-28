@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+
+    <title>spaCy Results Example</title>
+</head>
+<body>
+    <p>[ <a href="/">Add Another Document</a> | <a href="/all_docs">All Documents</a> | <a href="{{ url_for('get_entity_db', original_filename='') }}">View All Entities</a>]</p>
+    <h1>Summary</h1>
+    <p>{{ summary }}</p>
+    <h1><a href="{{ url_for('get_entity_db', original_filename=filename) }}">View Entities for Document</a> </h1>
+    <h1><a href="{{ url_for('show_ner', filename=filename) }}">View NER Visualizer for Document</a> </h1>
+    <h1>Full Text</h1>
+    <p>{{ fulltext }}</p>
+</body>
+</html>

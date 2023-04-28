@@ -9,7 +9,8 @@ class DatabaseConnection(object):
         self.SQL_CREATE_DOC = """
         CREATE TABLE documents (filename TEXT PRIMARY KEY, 
                                 fulltext TEXT, 
-                                summary TEXT);
+                                summary TEXT,
+                                nermarkup TEXT);
         """
         self.SQL_CREATE_ENTS = """
         CREATE TABLE IF NOT EXISTS entities (
@@ -21,7 +22,7 @@ class DatabaseConnection(object):
         """
         self.SQL_SELECT_ALL_DOCS = "SELECT * FROM documents"
         self.SQL_SELECT_DOC_BY_ID = "SELECT * FROM documents WHERE filename=?"
-        self.SQL_INSERT_DOC = "INSERT INTO documents (filename, fulltext, summary) VALUES (?, ?, ?)"
+        self.SQL_INSERT_DOC = "INSERT INTO documents (filename, fulltext, summary, nermarkup) VALUES (?, ?, ?, ?)"
         self.SQL_INSERT_ENTITY = "INSERT INTO entities (filename, entity, label) VALUES (?, ?, ?)"
         self.SQL_SELECT_ENTITIES_BY_DOC = "SELECT * FROM entities WHERE filename=?"
         self.SQL_SELECT_ALL_ENTS = "SELECT * FROM entities"
@@ -50,9 +51,9 @@ class DatabaseConnection(object):
         cursor = self.connection.execute(self.SQL_SELECT_ALL_ENTS)
         return cursor.fetchall()
     
-    def add_document(self, filename, fulltext, summary):
+    def add_document(self, filename, fulltext, summary, nermarkup):
         try:
-            self.connection.execute(self.SQL_INSERT_DOC, (filename, fulltext, summary))
+            self.connection.execute(self.SQL_INSERT_DOC, (filename, fulltext, summary, nermarkup))
             self.connection.commit()
         except sqlite3.IntegrityError:
             print(f"Warning: the document {filename} already exists in the table, ignoring...")

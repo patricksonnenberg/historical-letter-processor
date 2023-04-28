@@ -70,8 +70,8 @@ def show_result():
             ner_spacyed_text = spacyed_text.get_entities_with_markup()  # Calling on this method in ner to NER-ize the text
 
             summarized_text = process_text.get_summary(text)  # Gets the summary of the text
-
-            docs_db.add_document(original_filename, text, summarized_text)
+            original_filename = original_filename.split("/")[-1]
+            docs_db.add_document(original_filename, text, summarized_text, ner_spacyed_text)
             # Iterating over the entities in the doc and add to the database
             [docs_db.add_entity(original_filename, ent_text, label) for start, end, label, ent_text in spacyed_text.get_entities()]
             my_markup_dict['mark'] = ner_spacyed_text
@@ -92,6 +92,27 @@ def get_entity_db():
         # May want to add some preprocessing to make this a useful page
         entities = docs_db.get_all_entities()
     return render_template("entity_db.html", entities=entities)
+
+
+@app.route("/all_docs")
+def all_docs():
+    '''Display all documents previously loaded on one page'''
+    docs = docs_db.get_all_documents()
+    return render_template("all_docs.html", docs=docs)
+    
+@app.route("/all_docs/<filename>")
+def doc_data(filename):
+    """
+    document page: Pull up the doc for this filename
+    """
+    doc = docs_db.get_document_by_id(filename)
+    entities = docs_db.get_entities_by_doc(filename)
+    return render_template("doc.html", title=doc[0], fulltext=doc[1], summary=doc[2], entities=entities, filename=filename)
+
+@app.route("/all_docs/<filename>/ner")
+def show_ner(filename):
+    doc = docs_db.get_document_by_id(filename)
+    return render_template("ner.html", filename=filename, markup=doc[3])
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)  # So that it can run with docker
