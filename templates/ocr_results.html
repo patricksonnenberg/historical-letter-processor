@@ -10,30 +10,30 @@
 </head>
 
 <body>
-    <table>
-        <tr>
-            <td>
-                <h2>Image</h2>
-                    {% for i in image_files %}
-                        <img src={{i}} width=300>
-                    {% endfor %}
-            </td>
-        </tr>
-    </table>
-
-    
-
-    <form action="{{ url_for('show_result') }}" name="get_text" method="post">
-        <label for="doc_text">Please check the text below. Make any changes you deem necessary and click submit.</label>
-        <textarea cols="45" id="doc_text" name="doc_text" required="required" rows="8">
-            {{found_text}}
-        </textarea>
-        <input type="submit" value="Submit">
-    </form>
+<h1>OCR Results</h1>
+<div class="container">
+    <div class="image-container">
+        {% for i in image_files %}
+            <img src={{i}} width=300>
+        {% endfor %}
+    </div>
+    <div class="form-container">
+        <form action="{{ url_for('show_result') }}" name="get_text" method="post">
+            <div class="label-wrapper">
+                <label for="doc_text">Please check the text below. Make any changes you deem necessary and click submit.</label>
+                <textarea cols="45" id="doc_text" name="doc_text" required="required" rows="8">
+                    {{found_text}}
+                </textarea>
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
 
     <form action="{{url_for('home_page', file=image_files)}}" method="post">
         <button type="submit">Cancel</button>
     </form>
+
 </body>
 
 </html>

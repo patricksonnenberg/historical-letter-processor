@@ -7,10 +7,6 @@
  *
  */
 
-div {
-    border: thin solid black;
-    padding: 8px;
-}
 
 markup {
     line-height: 2.0;
@@ -64,4 +60,50 @@ span.category {
     border-radius: 0.35em;
     vertical-align: middle;
     margin-left: 0.5rem;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 40px
+}
+
+.image-container {
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.label-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+}
+
+label {
+  align-self: flex-start;
+  margin-bottom: 8px;
+}
+
+textarea {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  max-width:100%
+}
+
+h1 {
+    font-family: verdana;
+    text-align: center;
+    margin-bottom: 20px;
 }
