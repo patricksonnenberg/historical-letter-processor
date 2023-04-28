@@ -20,6 +20,11 @@
     </style>
 </head>
 <body>
+    {% if filename%}
+    <p>[ <a href="/">Add Another Document</a> | <a href="/all_docs">View All Documents</a> | <a href="{{url_for('doc_data', filename=filename)}}">View Document</a> | <a href="{{ url_for('get_entity_db', original_filename='') }}">View All Entities</a>]</p>
+    {% else %}
+    <p>[ <a href="/">Add Another Document</a> | <a href="/all_docs">View All Documents</a> ]</p>
+    {% endif %}
     <table>
         <tr>
             <th>Entity Label</th>
@@ -34,6 +39,6 @@
             </tr>
         {% endfor %}
     </table>
-    <p>[ <a href="/">Add Another Document</a> | <a href="/analyze">View All Documents</a> ]</p>
+   
 </body>
 </html>

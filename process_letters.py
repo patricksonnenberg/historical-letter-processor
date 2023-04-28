@@ -91,8 +91,7 @@ def get_entity_db():
     else:
         # May want to add some preprocessing to make this a useful page
         entities = docs_db.get_all_entities()
-    return render_template("entity_db.html", entities=entities)
-
+    return render_template("entity_db.html", entities=entities, filename=original_filename)
 
 @app.route("/all_docs")
 def all_docs():
@@ -111,6 +110,7 @@ def doc_data(filename):
 
 @app.route("/all_docs/<filename>/ner")
 def show_ner(filename):
+    '''Show the NER markup for the filename provided'''
     doc = docs_db.get_document_by_id(filename)
     return render_template("ner.html", filename=filename, markup=doc[3])
 
