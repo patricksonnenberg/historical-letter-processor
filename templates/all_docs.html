@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+
+    <title>All Documents</title>
+</head>
+<body>
+    <p>[ <a href="/">Add Another Document</a> ]</p>
+    {% for doc in docs %}
+    <li><h3><a href="{{url_for('doc_data', filename=doc[0])}}">{{ doc[0] }}</a></h3>
+        <p>{{doc[2]}}</p></li>
+    {% endfor %}
+    
+
+</body>
+</html>
