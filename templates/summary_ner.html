@@ -6,6 +6,7 @@
     <title>spaCy Results Example</title>
 </head>
 <body>
+    <p>[ <a href="/">Add Another Document</a> | <a href="{{ url_for('get_entity_db', original_filename=original_filename) }}">View Entities for File</a> | <a href="{{ url_for('get_entity_db', original_filename='') }}">View All Entities</a>]</p>
     <h1>Summary</h1>
     <p>{{ summary }}</p>
     <h1>NER Results</h1>
@@ -17,7 +18,7 @@
         <li>{{ entity.label_ }} - {{ entity.text }}</li>
     {% endfor %}
     </ul>
-    <p>[ <a href="/">Home</a> | <a href="/entity_db">View Entity Counts</a> ]</p>
+    
 
 </body>
 </html>

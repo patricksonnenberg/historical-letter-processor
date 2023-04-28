@@ -10,7 +10,8 @@ import process_text
 
 app = Flask(__name__)
 nlp = spacy.load("en_core_web_sm")
-connection = db.DatabaseConnection('entities.sqlite')
+#connection = db.DatabaseConnection('entities.sqlite')
+docs_db = db.create_db("historical_docs")
 my_markup_dict = {'mark': "Please return to the home page to add your input."}
 
 IMAGE_DIR = os.path.join('static', 'uploads')
@@ -27,20 +28,19 @@ def home_page():
             os.remove(file)
     return render_template('home_page.html')
 
-
 @app.route('/ocr_results', methods=['POST'])
 def ocr_results():
     uploaded_file = request.files['file']
     if uploaded_file.filename != '':
         filename = secure_filename(uploaded_file.filename)
         uploaded_file.save(os.path.join(app.config['UPLOADED_DOCS'], filename))
-        img = os.path.join(app.config['UPLOADED_DOCS'], filename)
+        original_filename = os.path.join(app.config['UPLOADED_DOCS'], filename)
     else:
-        img = ""
-    print(img)
+        original_filename = ""
+    print(original_filename)
     ## get text from pdf/jpeg
     ## show image and a text box for editting the text we find
-    img, found_text = process_file(img)
+    img, found_text = process_file(original_filename)
     print(img)
     images = [os.path.join(app.config['UPLOADED_DOCS'], i.split("/")[-1]) for i in img]
     print(images)
@@ -48,7 +48,11 @@ def ocr_results():
 
     is_valid_text = process_text.check_validity(found_text) # Returns boolean of true or false
 
-    return render_template('ocr_results.html', found_text=found_text, image_files=images, is_valid_text=is_valid_text)
+    return render_template('ocr_results.html', 
+                           found_text=found_text, 
+                           image_files=images, 
+                           is_valid_text=is_valid_text, 
+                           original_filename=original_filename)
 
 @app.route('/uploads/<filename>')
 def send_uploaded_file(filename=''):
@@ -59,6 +63,7 @@ def show_result():
     # I think once we are here, perhaps we should delete the images to clean up
     if request.method == "POST":
         text = request.form["doc_text"]
+        original_filename = request.args.get('original_filename')
         if text:
             doc = nlp(text)
             spacyed_text = ner.SpacyDocument(text)  # Creating spacy object
@@ -66,31 +71,27 @@ def show_result():
 
             summarized_text = process_text.get_summary(text)  # Gets the summary of the text
 
-            # Iterating over the entities in the doc and update the counts in the database
-            cursor = connection.get_cursor()
-            for ent in doc.ents:
-                # Checking if the entity is already in the database
-                cursor.execute("SELECT count FROM entities WHERE label = ? AND text = ?", (ent.label_, ent.text))
-                row = cursor.fetchone()
-                if row is None:
-                    # Inserting a new row for the entity if it doesn't already exist
-                    cursor.execute("INSERT INTO entities (label, text, count) VALUES (?, ?, 1)", (ent.label_, ent.text))
-                else:
-                    # Updating count for the entity if it already exists in the database
-                    count = row[0] + 1
-                    cursor.execute("UPDATE entities SET count = ? WHERE label = ? AND text = ?", (count, ent.label_, ent.text))
-            connection.commit()
+            docs_db.add_document(original_filename, text, summarized_text)
+            # Iterating over the entities in the doc and add to the database
+            [docs_db.add_entity(original_filename, ent_text, label) for start, end, label, ent_text in spacyed_text.get_entities()]
             my_markup_dict['mark'] = ner_spacyed_text
-            return render_template("result.html", text=ner_spacyed_text, entities=doc.ents, summary=summarized_text)
-        else:
-            return render_template('result.html', text=my_markup_dict['mark'])  # To prompt user to add input
+        return render_template("summary_ner.html", 
+                               text=my_markup_dict['mark'], 
+                               entities=doc.ents, 
+                               summary=summarized_text, 
+                               original_filename=original_filename)
     else:
-        return render_template('result.html', text=my_markup_dict['mark'])  # To prompt user to add input
+        return render_template('summary_ner.html', text=my_markup_dict['mark'])  # To prompt user to add input
 
 @app.route('/entity_db')
-def get_counts():
-    entity_counts = connection.get_entity_counts()
-    return render_template("entity_db.html", entity_counts=entity_counts)
+def get_entity_db():
+    original_filename = request.args.get('original_filename')
+    if original_filename:
+        entities = docs_db.get_entities_by_doc(original_filename)
+    else:
+        # May want to add some preprocessing to make this a useful page
+        entities = docs_db.get_all_entities()
+    return render_template("entity_db.html", entities=entities)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)  # So that it can run with docker

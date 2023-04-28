@@ -24,16 +24,16 @@
         <tr>
             <th>Entity Label</th>
             <th>Entity Text</th>
-            <th>Count</th>
+            <th>Filename</th>
         </tr>
-        {% for entity in entity_counts|sort(attribute='text') %}
+        {% for entity in entities|sort %}
             <tr>
-                <td>{{ entity.label }}</td>
-                <td>{{ entity.text }}</td>
-                <td>{{ entity.count }}</td>
+                <td>{{ entity[2] }}</td>
+                <td>{{ entity[1] }}</td>
+                <td>{{ entity[0] }}</td>
             </tr>
         {% endfor %}
     </table>
-    <p>[ <a href="/">Home</a> | <a href="/analyze">NER</a> ]</p>
+    <p>[ <a href="/">Add Another Document</a> | <a href="/analyze">View All Documents</a> ]</p>
 </body>
 </html>

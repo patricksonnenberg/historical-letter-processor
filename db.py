@@ -1,55 +1,79 @@
-import sys, sqlite3
+import sqlite3
 
-SQL_CREATE = "CREATE TABLE entities (entity TEXT PRIMARY KEY, count INTEGER)"
 
 class DatabaseConnection(object):
 
     def __init__(self, filename):
         self.connection = sqlite3.connect(filename, check_same_thread=False)
-        self.cursor = self.connection.cursor()
-        self.create_table()
 
-    def create_table(self):
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS entities (
-                label TEXT,
-                text TEXT,
-                count INTEGER,
-                PRIMARY KEY (label, text)
-            )
-        ''')
-        self.connection.commit()
-
-    def get_cursor(self):
-        return self.connection.cursor()
-
-    def commit(self):
-        self.connection.commit()
+        self.SQL_CREATE_DOC = """
+        CREATE TABLE documents (filename TEXT PRIMARY KEY, 
+                                fulltext TEXT, 
+                                summary TEXT);
+        """
+        self.SQL_CREATE_ENTS = """
+        CREATE TABLE IF NOT EXISTS entities (
+            filename TEXT,
+            entity TEXT,
+            label TEXT,
+            FOREIGN KEY(filename) REFERENCES documents(filename)
+        );
+        """
+        self.SQL_SELECT_ALL_DOCS = "SELECT * FROM documents"
+        self.SQL_SELECT_DOC_BY_ID = "SELECT * FROM documents WHERE filename=?"
+        self.SQL_INSERT_DOC = "INSERT INTO documents (filename, fulltext, summary) VALUES (?, ?, ?)"
+        self.SQL_INSERT_ENTITY = "INSERT INTO entities (filename, entity, label) VALUES (?, ?, ?)"
+        self.SQL_SELECT_ENTITIES_BY_DOC = "SELECT * FROM entities WHERE filename=?"
+        self.SQL_SELECT_ALL_ENTS = "SELECT * FROM entities"
 
     def create_schema(self):
         try:
-            self.connection.execute(SQL_CREATE)
+            self.connection.execute(self.SQL_CREATE_DOC)
+            self.connection.execute(self.SQL_CREATE_ENTS)
+            self.connection.commit()
         except sqlite3.OperationalError:
-            print("Warning: 'entities' table was already created, ignoring...")
+            print("Warning: the table was already created, ignoring...")
 
-    def get(self, entity=None):
-        if entity is not None:
-            cursor = self.connection.execute(f"SELECT * FROM entities WHERE entity='{entity}'")
-        else:
-            cursor = self.connection.execute("SELECT * FROM entities")
+    def get_all_documents(self):
+        cursor = self.connection.execute(self.SQL_SELECT_ALL_DOCS)
         return cursor.fetchall()
 
-    def get_entity_counts(self):
-        cursor = self.get_cursor()
-        cursor.execute("SELECT label, text, count FROM entities")
-        rows = cursor.fetchall()
-        entity_counts = []
-        for row in rows:
-            entity_counts.append({'label': row[0], 'text': row[1], 'count': row[2]})
-        return entity_counts
+    def get_document_by_id(self, filename):
+        cursor = self.connection.execute(self.SQL_SELECT_DOC_BY_ID, (filename,))
+        return cursor.fetchone()
+
+    def get_entities_by_doc(self, filename):
+        cursor = self.connection.execute(self.SQL_SELECT_ENTITIES_BY_DOC, (filename,))
+        return cursor.fetchall()
+    
+    def get_all_entities(self):
+        cursor = self.connection.execute(self.SQL_SELECT_ALL_ENTS)
+        return cursor.fetchall()
+    
+    def add_document(self, filename, fulltext, summary):
+        try:
+            self.connection.execute(self.SQL_INSERT_DOC, (filename, fulltext, summary))
+            self.connection.commit()
+        except sqlite3.IntegrityError:
+            print(f"Warning: the document {filename} already exists in the table, ignoring...")
+    
+    def add_entity(self, filename, entity, label):
+        cursor = self.connection.execute(
+            "SELECT * FROM entities WHERE filename=? AND entity=? AND label=?", (filename, entity, label))
+        result = cursor.fetchone()
+        if result:
+            # Entity already exists with this filename, don't add it again
+            return
+        self.connection.execute(self.SQL_INSERT_ENTITY, (filename, entity, label))
+        self.connection.commit()
+
+
+def create_db(db_name=None):
+    dbname = db_name if db_name else 'tmp'
+    connection = DatabaseConnection(f'{dbname}.sqlite')
+    connection.create_schema()
+    return connection
 
 
 if __name__ == '__main__':
-    dbname = sys.argv[1] if len(sys.argv) > 1 else 'tmp'
-    connection = DatabaseConnection(f'{dbname}.sqlite')
-    connection.create_schema()
+    create_db()
