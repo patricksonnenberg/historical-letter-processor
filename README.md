@@ -55,5 +55,6 @@ python 3.9.7
 spacy 3.3.1
 
 tesseract
+    <br>--macOS: brew install tesseract
 
 ADD MORE MODULES HERE

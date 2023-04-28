@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory
 import spacy
 
-from file_loader import process_file
+from process_files import process_file
 import ner
 import db
 from werkzeug.utils import secure_filename
