@@ -7,14 +7,14 @@ As a quick note, building the docker image might take a couple minutes, as might
 ### Flask Webserver
 This project uses a flask webserver that allows a user to upload their historical letter. The letter's text is processed using tesseract and OCR. The summarization is generated using BERT's summarizer tool, and the entities are extracted with spaCy's NER processing. 
 
-##### To run (without Docker): 
+### To run (without Docker): 
 Run the process_letters.py file:
 ```bash
 python process_letters.py
 ```
 Go to the address (http://127.0.0.1:5000).
 
-##### To run (with Docker): 
+### To run (with Docker): 
 Create the Docker image by first navigating to the folder in the terminal and running the command:
 ```bash
 docker build -t historicalletterapp .
@@ -38,7 +38,7 @@ docker stop <name>
 ```
 
 ### Challenges
-We ran into a few challenges, especially with tesseract, as it seemed to be working slightly different with Macs and PCs. The Docker image, however, solved this issue for us. 
+We ran into a few challenges, especially with tesseract, as it seemed to be working slightly different with Macs and PCs. The Docker image, however, solved this issue for us. We also ran into some formatting issues with the HTML files, but were able to figure it out. 
 
 ### Table of Contents
 
@@ -62,19 +62,31 @@ requirements.txt - all the requirements that need to be downloaded, which is han
 These requirements are found in requirements.txt, which is run when the Docker image is created.
 
 flask==2.2.2
+
 spacy==3.5.0
-pytesseract==0.3.10 
+
+pytesseract==0.3.10
+
 werkzeug==2.2.3
+
 pillow==9.4.0
+
 pdf2image==1.16.3
+
 pymupdf==1.22.1
+
 nltk==3.8.1
+
 bert-extractive-summarizer==0.10.1
+
 torch==2.0.0
 
 The rest is handled in the Dockerfile itself, and this includes:
 
 spacy's en_core_web_sm
+
 tesseract-ocr
+
 poppler-utils
+
 nltk's 'punkt'
