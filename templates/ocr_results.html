@@ -18,14 +18,14 @@
             <img src={{i}} width=300>
         {% endfor %}
     </div>
-    <div class="form-container">    
+    <div class="form-container">
         {% if not is_valid_text %}
         <strong>WARNING the text found seems incoherent or incomplete, please carefully check and make necessary changes.</strong>
         {% endif %}
         <form action="{{ url_for('show_result', original_filename=original_filename) }}" name="get_text" method="post">
             <div class="label-wrapper">
                 <label for="doc_text">Please check the text below. Make any changes you deem necessary and click submit.</label>
-                <textarea cols="45" id="doc_text" name="doc_text" required="required" rows="8">
+                <textarea cols="70" id="doc_text" name="doc_text" required="required" rows="100">
                     {{found_text}}
                 </textarea>
             </div>
@@ -33,10 +33,9 @@
         </form>
     </div>
 </div>
-
-    <form action="{{url_for('home_page', file=original_filename)}}" method="post">
-        <button type="submit">Cancel</button>
-    </form>
+<!--<form action="{{url_for('home_page', file=original_filename)}}" method="post">-->
+<!--    <button type="submit">Cancel</button>-->
+<!--</form>-->
 
 </body>
 
