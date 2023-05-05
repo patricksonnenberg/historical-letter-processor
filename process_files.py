@@ -62,16 +62,15 @@ def process_file(file_path: str) -> tuple[list[str], str]:
     # image can go straight to ocr
     if path.suffix in {".jpg", ".jpeg", ".png"}:
         print("suffix:", path.suffix)
-        return [file_path], ocr([path])
+        return [f"/static/uploads/{path.name}"], ocr([path])
     # pdf has to be converted to image first
     elif path.suffix == ".pdf":
-        # print("suffix:", path.suffix)
         pdf_obj = PdfDoc(path)
         images_list = convert_pdf_to_img(pdf_obj)
         if pdf_obj.pdf_type == "scanned_pdf":
-            return [str(i) for i in images_list], ocr(images_list)
+            return [f"/static/uploads/{i.name}" for i in images_list], ocr(images_list)
         else:
-            return [str(i) for i in images_list], pdf_obj.pdf_text
+            return [f"/static/uploads/{i.name}" for i in images_list], pdf_obj.pdf_text
     else:
         raise ValueError("Filetype is unknown. Please submit JPEG or PDF file.")
 
