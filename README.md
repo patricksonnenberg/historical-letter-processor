@@ -1,6 +1,6 @@
 ## Historical Letter Processor
 
-This project began as a way to read in ancestral historical letters, though it can apply broadly to any letter or PDF. It can be used as a tool to document family history. The letter processor allows a user to upload a PDF or jpeg of a letter, where the text is automatically recognized and extracted. The user can then update the text if it is incorrect, and once they are satisfied, it will be stored in a backend database. In addition, a summary of the letter is generated, along with all of the entities found in the document. They can access all the documents they have stored, and continue to access those summaries and entities, as they are all stored in the database. 
+This project began as a way to read in ancestral historical letters, though it can apply broadly to any letter or PDF. It can be used as a tool to document family history. The letter processor allows a user to upload a letter of file type PDF, JPEG, or PNG, where the text is automatically recognized and extracted. The user can then update the text if it is incorrect, and once they are satisfied, it will be stored in a backend database. In addition, a summary of the letter is generated, along with all of the entities found in the document. They can access all the documents they have stored, and continue to access those summaries and entities, as they are all stored in the database. 
 
 As a quick note, building the docker image might take a couple minutes, as might the OCR and summarizing, especially on the first run. 
 
