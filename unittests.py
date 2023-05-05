@@ -73,14 +73,7 @@ class TestGibberishAndSummarizer(unittest.TestCase):
         From that day on, Sophie and the snail became great friends, and the snail would visit her garden every day."""
         summary = get_summary(input_text)
         self.assertEqual(summary.count('.'), 2)
-
-
-
-
-
-
-
-
+        
 
 if __name__ == '__main__':
     unittest.main()
