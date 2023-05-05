@@ -3,10 +3,6 @@
 <head>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
-    <style>
-        body { background-color: linen; }
-
-    </style>
 
 </head>
 
@@ -25,7 +21,7 @@
         <form action="{{ url_for('show_result', original_filename=original_filename) }}" name="get_text" method="post">
             <div class="label-wrapper">
                 <label for="doc_text">Please check the text below. Make any changes you deem necessary and click submit.</label>
-                <textarea cols="70" id="doc_text" name="doc_text" required="required" rows="100">
+                <textarea cols="50" id="doc_text" name="doc_text" required="required" rows="25">
                     {{found_text}}
                 </textarea>
             </div>
