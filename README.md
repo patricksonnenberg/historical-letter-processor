@@ -49,6 +49,8 @@ We ran into a few challenges, especially with tesseract, as it seemed to be work
 
 We have created simple unit tests that are found in unittests.py. There's also test_accuracy.py, which does a qualitative test of the transcripts. We hand-transcribed six transcripts and compared those to the OCR output, generating a similarity score. As the transcripts were personal, we have decided to not include them in this repository, but can share them upon request. 
 
+If you wish to run either one of these tests, they would need to be run outside of the Docker file. 
+
 ### Table of Contents
 
 templates folder - HTML file templates to generate the webpages
